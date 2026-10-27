@@ -1,34 +1,33 @@
 import pandas as pd
-#acceso a bases de datos en excel
-#personalizar las siguientes variables
-# --CARPETA (carpeta de origen)
-# --EXCEL (nombre del excel como base de datos)
-# --ADR (nombre de la columna con las reacciones adversas)
-# --nombre_excel.xlsx (nombre del nuevo excel que contendrá las estadísticas)
 
-df = pd.read_excel('CARPETA/EXCEL.xlsx')
+PATH = "route_excel.xlsx"                  # Excel file with the reports
+ADR_COL = "ADR_col"                        # Column with adverse reactions (comma-separated)
+NARR_COL = "narr_col"                      # Column with narratives (used by drug_analysis.py, not here)
+DRUG_NAME = "drug_name"                    # Drug name, used in the table and the output file name
+OUTPUT_PATH = f"{DRUG_NAME}_reaction_statistics.xlsx"
+TOP_N = 50                                 # Number of reactions to report
 
-#columna con reacciones adversas
-columna = 'ADR'
+df = pd.read_excel(PATH)
 
-#función para separa reacciones adversas, pues vienen separadas por una coma
+# Split a cell into a list of unique reactions (they are separated by commas)
+def separate(cell):
+    if pd.isna(cell):
+        return []  # empty cell
+    return list({r.strip() for r in str(cell).split(',') if r.strip()})
 
-def separate(celda):
-    if pd.isna(celda):
-        return [] #checa si la celda está vacía
-    return list({r.strip() for r in str(celda).split(',') if r.strip()})
-    #se separa por comas y se limpia el texto
 
-df['reacciones']=df[columna].apply(separate)
+df['reactions'] = df[ADR_COL].apply(separate)
 
-#se hace el conteo de en cuantos reportes aparece la reacción, se cuenta por fila
-conteo=df['reacciones'].explode().value_counts()
+# Count in how many reports each reaction appears (one count per report)
+counts = df['reactions'].explode().value_counts()
 
-#se toma el total de reportes
-total_reportes = df [columna].notna().sum()
-top=conteo.head(50).reset_index()
-top.columns=['Reacción', 'Reportes']
-top['Porcentaje']= (top['Reportes']/total_reportes*100).round(1)
+# Total number of reports with a reaction recorded
+total_reports = df[ADR_COL].notna().sum()
+
+top = counts.head(TOP_N).reset_index()
+top.columns = ['Reaction', 'Reports']
+top['Percentage'] = (top['Reports'] / total_reports * 100).round(1)
+top.insert(0, 'Drug', DRUG_NAME)
 
 print(top)
-top.to_excel('nombre_excel.xlsx', index=False)
+top.to_excel(OUTPUT_PATH, index=False)
