@@ -1,81 +1,88 @@
-# Pharmacovigilance Research 🔬: adverse drug reaction statistics for protease inhibitors
+# Pharmacovigilance Research🔬: adverse drug reaction statistics for protease inhibitors
+## By ⚙️Lissel Erandi Flores Polvo.⚙️
 
-Descriptive statistics scripts for pharmacovigilance reports on protease inhibitors (honors thesis project). They compute adverse reaction frequencies and case counts by condition from Excel databases.
+Scripts for descriptive statistics and vocabulary extraction from pharmacovigilance reports on protease inhibitors (honors thesis project). They work on Excel databases, one drug at a timeime.
 
-> Status: templates. The scripts contain placeholders (`CARPETA`, `ADR`, `word1`, `CELDA`, etc.) that must be replaced before running. They do not include patient data.
+> Status: work in progress. Some scripts still need the paths and column names set for your data.
 
-## Contents
+## Repository structure💻
 
-| File | What it does |
-|---|---|
-| `scripts/adr_stadistics.py` | Counts the number of reports in which each adverse reaction appears and computes its percentage over the total number of reports. |
-| `scripts/drug_analysis.py` | For one drug: adjusted total of cases and case counts per keyword in the narratives. |
-| `scripts/general_analisis.py` | Same as `drug_analysis.py`, but for several files at once, with a comparison table of percentages. |
+```
+.
+├── README.md
+├── research_journal/
+└── scripts/
+    ├── adr_stadistics.py            # reaction counts per report
+    ├── drug_analysis.py             # keyword analysis per drug (template)
+    └── vocabulario/
+        ├── vocab_reactions.py       # vocabulary from the structured reactions column
+        ├── vocab_narrative.py       # vocabulary from narratives (Stanza, i2b2 NER)
+        ├── clean_narrative_vocab.py # cleans the narrative vocabulary
+        └── top_reactions.py
+       # top 15 reactions from the narrative vocabulary 
+```
+
+## Configuration 
+
+Every script has a configuration block at the top. Set these variables before running a script:
+
+| Variable | Meaning | Example |
+|---|---|---|
+| `PATH` | Excel file with the reports | `"route_excel.xlsx"` |
+| `ADR_COL` | Column with adverse reactions, separated by commas | `"ADR_col"` |
+| `NARR_COL` | Column with the free-text narratives | `"narr_col"` |
+| `DRUG_NAME` | Name of the drug, used in tables and output file names | `"drug_name"` |
+| `NUM_CASES` | Column with number of cases | `"num_cases_col"` |
+
+Only change these values. Do not change the rest of the code unless you are modifying the analysis.
 
 ## Requirements
 
 - Python 3.9 or later
-- pandas
-- openpyxl (to read and write `.xlsx` files)
+- pandas and openpyxl (to read and write `.xlsx` files)
+- stanza (only for the narrative vocabulary scripts)
+- requests (only for `buscar_cui.py`)
 
 ```bash
-pip install pandas openpyxl
+pip install pandas openpyxl stanza requests
 ```
 
 ## Expected data format
 
-The databases are Excel files with at least these columns:
-
-- **Adverse Events** (or the name you set in `ADR`): adverse reactions separated by commas.
-- **Number of Cases**: number of cases per report. Empty cells are counted as 1 in `drug_analysis.py`.
-- **Narrative and comments**: free-text narrative, used to search for keywords.
+- **ADR_COL:** reactions separated by commas, for example `Weight gain drug-induced, Insulin resistance drug-induced`.
+- **NARR_COL:** free-text narrative for each report.
+- **Number of Cases:** used by `drug_analysis.py`. Empty cells are counted as 1.
 
 ## Usage
 
-### 1. 💊`adr_stadistics.py`
-
-1. Replace `CARPETA` and `EXCEL` in the `pd.read_excel` path.
-2. Change `columna = 'ADR'` to the actual name of the reactions column.
-3. Change `nombre_excel.xlsx` to the output file name.
-4. Run:
+### Reaction statistics
 
 ```bash
 python scripts/adr_stadistics.py
 ```
 
-Output: a table of the 50 most frequent reactions, with columns `Reacción`, `Reportes` and `Porcentaje`. Each report counts once per reaction, even if the reaction appears more than once in the same cell.
+Output: `<DRUG_NAME>_reaction_statistics.xlsx`, with the columns `Drug`, `Reaction`, `Reports` and `Percentage`. Each report counts once per reaction, even if the reaction is repeated in the same cell.
 
-### 2. 💊`drug_analysis.py`
+### Narrative vocabulary
 
-1. Replace `CARPETA_ORIGEN/DRUG1.xlsx` with the database for the drug.
-2. Define the keywords in `cases_w_conditions` (`word1`, `word2`, ...).
-3. Run:
+Run the scripts in this order, from the `scripts/vocabulario/` folder:
 
-```bash
-python scripts/drug_analysis.py
+```bash  
+python vocab_reactions.py         # reaction vocabulary from ADR_COL
+python vocab_narrative.py         # narrative vocabulary (Stanza)
+python clean_narrative_vocab.py   # cleaned vocabulary
+python top_reacciones.py          # top 15 reactions
 ```
+### Keyword analysis (templates)
 
-Output: adjusted total of cases, total adverse cases, and accumulated cases for each keyword.
+`drug_analysis.py` is a template. Replace the placeholder keywords and file names before running it.
 
-### 3. 💊`general_analisis.py`
+## Notes📓
 
-1. Replace the `books` list with the paths to the databases.
-2. Define the keywords in `palabras_clave`.
-3. Replace `CELDA` with the name of the numeric column (usually `Number of Cases`), and `Narrative and comments` if it has a different name.
-4. Run:
+- Keyword searches match substrings. "rash" also matches "rashes" or "the rash".
+- Counts per report (`adr_stadistics.py`) are different from mention counts in free text. Do not describe mention counts as reports.
+- Drug suffixes used to identify drugs (`avir`, `vudine`, `citabine`, `tenofovir`) are a heuristic. Adjust them for each main drug.
 
-```bash
-python scripts/general_analisis.py
-```
-
-Output: a table with one row per drug and the percentage of cases that mention each keyword.
-
-## 📓Notes
-
-- `drug_analysis.py` and `general_analisis.py` match keywords as substrings. "rash" also matches "rashes" or "the rash".
-- Some scripts use `isinstance(valor, (int, float))` to validate numbers. Pandas can return `numpy.int64`, which fails that check; `pd.to_numeric` is safer.
-- Reaction counts in `adr_stadistics.py` are per report. Mention counts from free text are not reports.
-
-## 📊Data
+## Data📊
 
 The original data is not included in this repository. If data is added, it must not contain information that identifies patients.
