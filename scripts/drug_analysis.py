@@ -1,26 +1,22 @@
-
-
-#ritonavir
 import pandas as pd
-#------------------NÚMERO DE CASOS TOTALES-----------------------------------------
-df = pd.read_excel('CARPETA_ORIGEN/DRUG1.xlsx', sheet_name='Sheet0')
-total_acumulado = 0
-#columna de número de casos
-num_cases = "Number of Cases"
+#------------------TOTAL NUMBER OF CASES-----------------------------------------
+df = pd.read_excel('route_excel.xlsx', sheet_name='Sheetn')
+#cumulative total
+cum_total = 0
+
+#number of cases column
+num_cases = "num_cases_col"
 
 for valor in df[num_cases]:
-    
-    # Si la celda está vacía o no es un número válido (NaN), sumamos 1
     if pd.isna(valor):
-        total_acumulado += 1
+        cum_total += 1
     else:
-        # Si sí es un número, sumamos su valor real
-        total_acumulado += valor
+        cum_total += valor
 
-print(f"El total ajustado es: {total_acumulado}")
+print(f"The total of cases is: {cum_total}")
 #-----------------------------------------------------------------------------
 #adverse reactions = ar
-# reaccciones adversas en total en todos los casos registrados
+
 ar = pd.to_numeric(df['Number of Cases'], errors='coerce').sum()
 print(f"Total de casos adversos cuando hubo drug1 en tratamiento: {ar}")
 
@@ -36,19 +32,19 @@ cases_w_conditions = {
     "word6": 0
 
 }
-#recorrido de cada fila
+#Each row's walkthrough
 for indice, fila in df.iterrows():
-    full_content = str(fila['Narrative and comments']).lower()
-    num_cases = fila['Number of Cases']
+    full_content = str(fila['narr_col']).lower()
+    num_cases = fila['num_cases_col']
     
-    # Validamos que el número sea válido
+    # Validation process
     if pd.notna(num_cases) and isinstance(num_cases, (int, float)):
-        # Revisamos cada palabra de nuestro diccionario
+        # at each word
         for condition in cases_w_conditions:
             if condition in full_content:
-                # Si la encuentra, suma el valor a esa palabra específica en el diccionario
+                # If found, add the value to that specific word in the dictionary
                 cases_w_conditions[condition] += num_cases
 
-# Mostramos los resultados finales
+# final results
 for condition, total in cases_w_conditions.items():
     print(f"Total acumulado para '{condition}': {total}")
