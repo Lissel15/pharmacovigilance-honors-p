@@ -1,4 +1,4 @@
-# Pharmacovigilance Research: adverse drug reaction statistics for protease inhibitors
+# Pharmacovigilance Research 🔬: adverse drug reaction statistics for protease inhibitors
 
 Descriptive statistics scripts for pharmacovigilance reports on protease inhibitors (honors thesis project). They compute adverse reaction frequencies and case counts by condition from Excel databases.
 
@@ -32,7 +32,7 @@ The databases are Excel files with at least these columns:
 
 ## Usage
 
-### 1. `adr_stadistics.py`
+### 1. 💊`adr_stadistics.py`
 
 1. Replace `CARPETA` and `EXCEL` in the `pd.read_excel` path.
 2. Change `columna = 'ADR'` to the actual name of the reactions column.
@@ -45,7 +45,7 @@ python adr_stadistics.py
 
 Output: a table of the 50 most frequent reactions, with columns `Reacción`, `Reportes` and `Porcentaje`. Each report counts once per reaction, even if the reaction appears more than once in the same cell.
 
-### 2. `drug_analysis.py`
+### 2. 💊`drug_analysis.py`
 
 1. Replace `CARPETA_ORIGEN/DRUG1.xlsx` with the database for the drug.
 2. Define the keywords in `cases_w_conditions` (`word1`, `word2`, ...).
@@ -57,7 +57,7 @@ python drug_analysis.py
 
 Output: adjusted total of cases, total adverse cases, and accumulated cases for each keyword.
 
-### 3. `general_analisis.py`
+### 3. 💊`general_analisis.py`
 
 1. Replace the `books` list with the paths to the databases.
 2. Define the keywords in `palabras_clave`.
