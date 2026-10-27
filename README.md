@@ -8,9 +8,9 @@ Descriptive statistics scripts for pharmacovigilance reports on protease inhibit
 
 | File | What it does |
 |---|---|
-| `adr_stadistics.py` | Counts the number of reports in which each adverse reaction appears and computes its percentage over the total number of reports. |
-| `drug_analysis.py` | For one drug: adjusted total of cases and case counts per keyword in the narratives. |
-| `general_analisis.py` | Same as `drug_analysis.py`, but for several files at once, with a comparison table of percentages. |
+| `scripts/adr_stadistics.py` | Counts the number of reports in which each adverse reaction appears and computes its percentage over the total number of reports. |
+| `scripts/drug_analysis.py` | For one drug: adjusted total of cases and case counts per keyword in the narratives. |
+| `scripts/general_analisis.py` | Same as `drug_analysis.py`, but for several files at once, with a comparison table of percentages. |
 
 ## Requirements
 
@@ -40,7 +40,7 @@ The databases are Excel files with at least these columns:
 4. Run:
 
 ```bash
-python adr_stadistics.py
+python scripts/adr_stadistics.py
 ```
 
 Output: a table of the 50 most frequent reactions, with columns `Reacción`, `Reportes` and `Porcentaje`. Each report counts once per reaction, even if the reaction appears more than once in the same cell.
@@ -52,7 +52,7 @@ Output: a table of the 50 most frequent reactions, with columns `Reacción`, `Re
 3. Run:
 
 ```bash
-python drug_analysis.py
+python scripts/drug_analysis.py
 ```
 
 Output: adjusted total of cases, total adverse cases, and accumulated cases for each keyword.
@@ -65,17 +65,17 @@ Output: adjusted total of cases, total adverse cases, and accumulated cases for 
 4. Run:
 
 ```bash
-python general_analisis.py
+python scripts/general_analisis.py
 ```
 
 Output: a table with one row per drug and the percentage of cases that mention each keyword.
 
-## Notes
+## 📓Notes
 
 - `drug_analysis.py` and `general_analisis.py` match keywords as substrings. "rash" also matches "rashes" or "the rash".
 - Some scripts use `isinstance(valor, (int, float))` to validate numbers. Pandas can return `numpy.int64`, which fails that check; `pd.to_numeric` is safer.
 - Reaction counts in `adr_stadistics.py` are per report. Mention counts from free text are not reports.
 
-## Data
+## 📊Data
 
 The original data is not included in this repository. If data is added, it must not contain information that identifies patients.
