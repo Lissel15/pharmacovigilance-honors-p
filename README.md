@@ -18,8 +18,7 @@ Scripts for descriptive statistics and vocabulary extraction from pharmacovigila
         ├── vocab_reactions.py       # vocabulary from the structured reactions column
         ├── vocab_narrative.py       # vocabulary from narratives (Stanza, i2b2 NER)
         ├── clean_narrative_vocab.py # cleans the narrative vocabulary
-        └── top_reactions.py
-       # top 15 reactions from the narrative vocabulary 
+        └── top_reactions.py # top 15 reactions from the narrative vocabulary 
 ```
 
 ## Configuration 
