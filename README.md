@@ -14,7 +14,7 @@ Scripts for descriptive statistics and vocabulary extraction from pharmacovigila
 └── scripts/
     ├── adr_stadistics.py            # reaction counts per report
     ├── drug_analysis.py             # keyword analysis per drug (template)
-    └── vocabulario/
+    └── vocabulary/
         ├── vocab_reactions.py       # vocabulary from the structured reactions column
         ├── vocab_narrative.py       # vocabulary from narratives (Stanza, i2b2 NER)
         ├── clean_narrative_vocab.py # cleans the narrative vocabulary
